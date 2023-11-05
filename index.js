@@ -82,8 +82,8 @@ app.post("/login", async (req, res) => {
 });
 
 // CREATE TODO
-// app.post("/createtodo", auth, async (req, res) => {
-app.post("/createtodo", async (req, res) => {
+app.post("/createtodo", auth, async (req, res) => {
+// app.post("/createtodo", async (req, res) => {
   try {
     const { title, userId, values } = req.body;
     const newTodo = new Todo({ title, userId, values });
@@ -96,12 +96,11 @@ app.post("/createtodo", async (req, res) => {
 });
 
 // GET TODO
-// app.get("/todo", auth, async (req, res) => {
-app.get("/todo", async (req, res) => {
+app.get("/todo", auth, async (req, res) => {
+// app.get("/todo", async (req, res) => {
   try {
-    const userId = req.query.userId;
-    const allTodo = await Todo.find({ userId }, { _id: 0, __v: 0 });
-
+    const {userId} = req.query;
+    const allTodo = await Todo.find({userId}, { _id: 0, __v: 0 });
     return res.status(201).json({ msg: "successfully", data: allTodo });
   } catch (error) {
     console.error("Create Todo error:", error);

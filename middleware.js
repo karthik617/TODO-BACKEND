@@ -15,7 +15,7 @@ module.exports = {
         const decoded = jwt.verify(authHeader, JWT_SECRET);
         // console.log(decoded, 'D-coded token')
         if (decoded && decoded.id) {
-            req.userId = decoded.id;
+            // req.userId = decoded.id;
             next()
         } else {
             return res.status(403).json({msg: "Incorrect token"});

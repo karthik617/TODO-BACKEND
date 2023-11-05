@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+require('dotenv').config();
 
 const User = require("./users");
 const Todo = require("./todo");
@@ -16,8 +17,11 @@ var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(jsonParser);
 
+const mongo_uri = process.env.MONGO_URI
+
+const docker_mongo_uri = "mongodb://mongoDB/karthikDB"
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(docker_mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -66,6 +70,7 @@ app.post("/login", async (req, res) => {
         },
         JWT_SECRET
       );
+      // console.log(token, 'GENERATED token')
 
       return res.status(201).json({ token, msg: "Login successfully" });
     }
@@ -77,7 +82,8 @@ app.post("/login", async (req, res) => {
 });
 
 // CREATE TODO
-app.post("/createtodo", auth, async (req, res) => {
+// app.post("/createtodo", auth, async (req, res) => {
+app.post("/createtodo", async (req, res) => {
   try {
     const { title, userId, values } = req.body;
     const newTodo = new Todo({ title, userId, values });
@@ -90,7 +96,8 @@ app.post("/createtodo", auth, async (req, res) => {
 });
 
 // GET TODO
-app.get("/todo", auth, async (req, res) => {
+// app.get("/todo", auth, async (req, res) => {
+app.get("/todo", async (req, res) => {
   try {
     const userId = req.query.userId;
     const allTodo = await Todo.find({ userId }, { _id: 0, __v: 0 });

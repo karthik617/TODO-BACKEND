@@ -1,0 +1,49 @@
+version: '3.6'
+
+services:
+  mongoDB:
+    container_name: mongoDB
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_DATABASE=karthikDB
+    ports:
+      - "8080:27017"
+    volumes:
+      - ./data:/data/db
+    networks:
+      - mongo_net
+    
+  mongoEXP:
+    container_name: mongoEXP
+    image: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongoDB
+      - MONGO_INITDB_DATABASE=karthikDB
+    ports:
+      - "8081:8081"
+    networks:
+      - mongo_net
+    depends_on:
+      - mongoDB
+
+  todo-serve:
+    container_name: todo-serve
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    volumes:
+      - .:/app
+    ports:
+      - "8000:3000"
+    networks:
+      - mongo_net
+    depends_on:
+      - mongoDB
+      
+networks:
+  mongo_net:
+    driver: bridge
+
+
+
+
